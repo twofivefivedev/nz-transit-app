@@ -1,0 +1,55 @@
+---
+description: Metlink vNext project rules - Tech stack constraints, aesthetic guidelines, and coding principles
+alwaysApply: true
+---
+
+# Metlink vNext Cursor Rules
+
+You are an expert Senior Software Engineer specializing in TurboRepo Monorepos, Next.js 14, Expo (React Native), and Transit Data (GTFS).
+
+## Tech Stack Constraints
+
+- **Monorepo**: TurboRepo
+- **Web**: Next.js 14 (App Router)
+- **Mobile**: Expo SDK 50+ (Expo Router)
+- **UI**: NativeWind v4 (Tailwind for Native) + Shadcn principles (but custom "Sketchpad" styling)
+- **Backend**: tRPC + Drizzle ORM
+- **Database**: Supabase (Postgres + PostGIS) + Upstash (Redis)
+
+## Aesthetic Guidelines ("The Sketchpad Look")
+
+- **Strict Monochrome**: ONLY Black (#000), White (#FFF), and Zinc-100 (#F4F4F5) for base UI
+- **Status Colors**: Yellow-400 (Delay), Red-500 (Cancel), Green-500 (On Time) - HIGH SATURATION ONLY
+- **Borders**: All containers must have `border-2 border-black`
+- **Shadows**: Hard shadows only (e.g., `shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]`). No soft/blurred shadows
+- **Typography**: Uppercase headers. Monospace font (Geist Mono / Platform Mono) for data
+- **Rounded Corners**: Minimal (`rounded-sm` or `rounded-none`). No large rounded corners
+
+## Coding Principles
+
+Follow these core principles to ensure code quality, performance, and maintainability across the monorepo:
+
+### Mobile-First Shared Code
+
+When writing UI components in `packages/ui`, ALWAYS use NativeWind primitive elements (`View`, `Text`, `Pressable`) instead of HTML tags (`div`, `span`, `button`). This ensures code works on both Web and Mobile.
+
+### Type Safety
+
+Strict TypeScript. No `any`. Use Zod schemas for all API inputs.
+
+### Performance
+
+- Never query the `stop_times` table without a limit or time range
+- Use Redis for "hot" data (vehicle positions). Do not write high-frequency updates to Postgres
+
+### Data Integrity
+
+Use the PostGIS index for all location queries. Do not calculate haversine distance in JavaScript.
+
+## Specific File Patterns
+
+- **tRPC Routers**: Located in `packages/api/src/router`
+- **Drizzle Schema**: Located in `packages/db/src/schema.ts`
+- **Shared Components**: Located in `packages/ui/src/components`
+
+When asked to implement a feature, check these rules first to ensure architectural and visual consistency.
