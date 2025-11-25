@@ -10,4 +10,7 @@ export const db = drizzle(queryClient, { schema });
 export * from "./schema";
 export type { InferSelectModel, InferInsertModel } from "drizzle-orm";
 
+// Export Redis utilities for real-time data
+export * from "./redis";
+
 

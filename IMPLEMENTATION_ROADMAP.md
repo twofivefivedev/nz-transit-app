@@ -16,16 +16,16 @@
 
 ### 1.2 Database Infrastructure (Supabase)
 
-- [ ] Enable PostGIS extension.
-- [ ] Define GTFS Schema (Public Data):
+- [x] Enable PostGIS extension.
+- [x] Define GTFS Schema (Public Data):
   - `agency`, `stops` (geography), `routes`, `trips`, `stop_times`, `calendar`.
   - Index: `CREATE INDEX ON stops USING GIST (location);`.
-- [ ] Define User Schema (Private Data):
+- [x] Define User Schema (Private Data):
   - `profiles`: Linked to `auth.users` (UUID, created_at).
   - `saved_stops`: FK to `profiles.id` and `stops.stop_id`.
   - `saved_routes`: FK to `profiles.id` and `routes.route_id`.
   - RLS Policies: Enable Row Level Security so users can only select/insert their own rows.
-- [ ] Setup Redis (Upstash) for hot state (vehicle positions).
+- [x] Setup Redis (Upstash) for hot state (vehicle positions).
 
 ### 1.3 GTFS Static Ingestor
 
