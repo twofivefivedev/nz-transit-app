@@ -6,13 +6,13 @@
 
 ### 1.1 Workspace Setup
 
-- [ ] Initialize TurboRepo workspace.
-- [ ] Create `apps/web` (Next.js 14 App Router).
-- [ ] Create `apps/mobile` (Expo SDK 50+).
-- [ ] Create `packages/ui` (Shared UI Logic).
-- [ ] Create `packages/api` (tRPC router, Zod schemas, DB client).
-- [ ] Create `packages/db` (Drizzle ORM definitions).
-- [ ] Vercel Configuration: Create `vercel.json` to manage monorepo build settings (ignore mobile changes).
+- [x] Initialize TurboRepo workspace.
+- [x] Create `apps/web` (Next.js 14 App Router).
+- [x] Create `apps/mobile` (Expo SDK 50+).
+- [x] Create `packages/ui` (Shared UI Logic).
+- [x] Create `packages/api` (tRPC router, Zod schemas, DB client).
+- [x] Create `packages/db` (Drizzle ORM definitions).
+- [x] Vercel Configuration: Create `vercel.json` to manage monorepo build settings (ignore mobile changes).
 
 ### 1.2 Database Infrastructure (Supabase)
 
