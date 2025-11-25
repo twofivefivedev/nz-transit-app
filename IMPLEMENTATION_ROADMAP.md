@@ -29,9 +29,9 @@
 
 ### 1.3 GTFS Static Ingestor
 
-- [ ] Build Node.js script (`scripts/ingest-static.ts`) using `csv-parser`.
-- [ ] Implement bulk upsert strategy (batches of 5000) for `stop_times`.
-- [ ] Verify we can query "Bus stops near me" via SQL.
+- [x] Build Node.js script (`scripts/ingest-static.ts`) using `csv-parser`.
+- [x] Implement bulk upsert strategy (batches of 5000) for `stop_times`.
+- [x] Verify we can query "Bus stops near me" via SQL.
 
 ## Phase 2: The "Sketchpad" Design System (Weeks 3-4)
 

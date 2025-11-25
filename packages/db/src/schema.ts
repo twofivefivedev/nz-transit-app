@@ -140,8 +140,8 @@ export const stopTimes = pgTable(
     tripId: varchar("trip_id", { length: 255 })
       .notNull()
       .references(() => trips.tripId),
-    arrivalTime: time("arrival_time").notNull(),
-    departureTime: time("departure_time").notNull(),
+    arrivalTime: integer("arrival_time").notNull(), // Stored as seconds from midnight (can exceed 86400)
+    departureTime: integer("departure_time").notNull(),
     stopId: varchar("stop_id", { length: 255 })
       .notNull()
       .references(() => stops.stopId),

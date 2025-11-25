@@ -1,0 +1,25 @@
+{
+  "name": "@metlink/scripts",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "ingest": "tsx ingest-static.ts",
+    "ingest:dry-run": "DRY_RUN=true tsx ingest-static.ts",
+    "verify-nearby": "tsx verify-nearby.ts"
+  },
+  "dependencies": {
+    "@metlink/db": "*",
+    "csv-parser": "^3.0.0",
+    "dotenv": "^16.4.5",
+    "node-fetch": "^3.3.2",
+    "unzipper": "^0.12.3"
+  },
+  "devDependencies": {
+    "@types/node": "^22.10.1",
+    "@types/unzipper": "^0.10.10",
+    "tsx": "^4.19.2",
+    "typescript": "^5.7.2"
+  }
+}
+

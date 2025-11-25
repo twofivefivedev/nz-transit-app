@@ -8,7 +8,10 @@
     "clean": "turbo clean",
     "format": "prettier --write \"**/*.{ts,tsx,md}\"",
     "db:generate": "turbo db:generate",
-    "db:push": "turbo db:push"
+    "db:push": "turbo db:push",
+    "gtfs:ingest": "npm run ingest -w @metlink/scripts",
+    "gtfs:ingest:dry-run": "npm run ingest:dry-run -w @metlink/scripts",
+    "gtfs:verify": "npm run verify-nearby -w @metlink/scripts"
   },
   "dependencies": {
     "react": "18.3.1",
@@ -21,7 +24,8 @@
   },
   "workspaces": [
     "apps/*",
-    "packages/*"
+    "packages/*",
+    "scripts"
   ],
   "overrides": {
     "react": "18.3.1",
