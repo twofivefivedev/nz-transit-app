@@ -54,6 +54,9 @@ drizzle/
 *.swp
 *.swo
 
+# Supabase
+supabase/.temp/
+
 # Expo
 *.jks
 *.p8
