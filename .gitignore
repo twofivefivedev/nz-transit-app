@@ -1,19 +1,24 @@
 # Dependencies
-node_modules/
+node_modules
 .pnp
 .pnp.js
 
 # Testing
-coverage/
+coverage
 
 # Next.js
 .next/
 out/
-build/
+build
+
+# Expo
+.expo/
 dist/
+web-build/
 
 # Production
-*.log
+build
+dist
 
 # Misc
 .DS_Store
@@ -25,8 +30,11 @@ yarn-debug.log*
 yarn-error.log*
 
 # Local env files
-.env*.local
 .env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
 
 # Vercel
 .vercel
@@ -34,11 +42,22 @@ yarn-error.log*
 # Turbo
 .turbo
 
-# Expo
-.expo/
-.expo-shared/
-
 # TypeScript
 *.tsbuildinfo
 
+# Drizzle
+drizzle/
 
+# IDE
+.idea
+.vscode
+*.swp
+*.swo
+
+# Expo
+*.jks
+*.p8
+*.p12
+*.key
+*.mobileprovision
+*.orig.*

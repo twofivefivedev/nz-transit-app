@@ -63,22 +63,7 @@ We are rebuilding the Metlink Train Schedule into a scalable, multi-modal transi
 - **Framework:** TurboRepo (Monorepo), Next.js (Web), Expo (Mobile).
 - **Styling:** NativeWind (Tailwind for React Native) to share the specific design tokens.
 
-## 7. Current Status
-
-**Phase 1.1 - Workspace Setup: ✅ Complete**
-
-- TurboRepo monorepo initialized and configured
-- Next.js 14 web app (`apps/web`) with App Router, TypeScript, and Tailwind CSS
-- Expo SDK 50+ mobile app (`apps/mobile`) with Expo Router, TypeScript, and NativeWind v4
-- Shared UI package (`packages/ui`) configured with NativeWind/Tailwind
-- tRPC API package (`packages/api`) with basic router structure
-- Database package (`packages/db`) with Drizzle ORM and initial schema
-- Vercel configuration for monorepo deployment (ignores mobile changes)
-- Development servers running successfully (web: localhost:3000, mobile: localhost:8081)
-
-**Next Steps:** Phase 1.2 - Database Infrastructure (Supabase setup)
-
-## 8. Future Scope (Post-MVP)
+## 7. Future Scope (Post-MVP)
 
 - Journey Planner (A to B routing).
 - Live Map View (Vehicle icons moving on map).

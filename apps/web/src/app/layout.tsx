@@ -1,9 +1,10 @@
 import type { Metadata } from "next";
-import "../styles/globals.css";
+import { GeistMono } from "geist/font/mono";
+import "@/styles/globals.css";
 
 export const metadata: Metadata = {
   title: "Metlink vNext",
-  description: "A scalable, multi-modal transit platform for Wellington, NZ",
+  description: "Real-time transit information for Wellington",
 };
 
 export default function RootLayout({
@@ -12,8 +13,10 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en">
-      <body>{children}</body>
+    <html lang="en" className={GeistMono.variable}>
+      <body className="min-h-screen bg-white font-mono antialiased">
+        {children}
+      </body>
     </html>
   );
 }

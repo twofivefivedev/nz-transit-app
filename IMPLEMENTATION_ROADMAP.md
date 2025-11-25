@@ -8,7 +8,7 @@
 
 - [x] Initialize TurboRepo workspace.
 - [x] Create `apps/web` (Next.js 14 App Router).
-- [x] Create `apps/mobile` (Expo SDK 50+).
+- [x] Create `apps/mobile` (Expo SDK 52+).
 - [x] Create `packages/ui` (Shared UI Logic).
 - [x] Create `packages/api` (tRPC router, Zod schemas, DB client).
 - [x] Create `packages/db` (Drizzle ORM definitions).
@@ -39,17 +39,17 @@
 
 ### 2.1 Styling Infrastructure
 
-- [ ] Install NativeWind (v4) in `packages/ui`.
-- [ ] Define Design Tokens in `tailwind.config.js`:
+- [x] Install NativeWind (v4) in `packages/ui`.
+- [x] Define Design Tokens in `tailwind.config.js`:
   - Border: 2px.
   - Colors: black, white, zinc-100.
   - Typography: Geist Mono (Web) / Platform Monospace (Mobile).
 
 ### 2.2 Core Components (Dumb UI)
 
-- [ ] `<Card />`: `border-2 border-black bg-white shadow-sharp`.
-- [ ] `<Button />`: Hard edges, uppercase text.
-- [ ] `<StatusBadge />`: Inverted colors for status.
+- [x] `<Card />`: `border-2 border-black bg-white shadow-sharp`.
+- [x] `<Button />`: Hard edges, uppercase text.
+- [x] `<StatusBadge />`: Inverted colors for status.
 - [ ] `<DepartureRow />`: Grid layout for schedule times.
 
 ## Phase 3: The Real-Time Engine & User API (Weeks 5-6)

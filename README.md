@@ -1,78 +1,110 @@
 # Metlink vNext
 
-A scalable, multi-modal transit platform for Wellington, NZ built with TurboRepo, Next.js, and Expo.
+Real-time multi-modal transit platform for Wellington, New Zealand.
 
-## Architecture
+## Tech Stack
 
-This is a TurboRepo monorepo containing:
+- **Monorepo**: TurboRepo
+- **Web**: Next.js 14 (App Router)
+- **Mobile**: Expo SDK 52 (Expo Router)
+- **UI**: NativeWind v4 (Tailwind for Native)
+- **Backend**: tRPC + Drizzle ORM
+- **Database**: Supabase (Postgres + PostGIS) + Upstash (Redis)
 
-- **apps/web** - Next.js 14 web application (App Router)
-- **apps/mobile** - Expo SDK 50+ mobile application
-- **packages/ui** - Shared UI components (NativeWind/Tailwind)
-- **packages/api** - tRPC router and shared types
-- **packages/db** - Drizzle ORM schema definitions
+## Project Structure
+
+```
+metlink-vnext/
+├── apps/
+│   ├── web/          # Next.js web application
+│   └── mobile/       # Expo mobile application
+├── packages/
+│   ├── ui/           # Shared UI components (NativeWind)
+│   ├── api/          # tRPC router and shared types
+│   └── db/           # Drizzle ORM schema definitions
+└── vercel.json       # Vercel deployment config
+```
 
 ## Getting Started
 
 ### Prerequisites
 
-- Node.js 18+
+- Node.js 20+
 - npm 10+
 
 ### Installation
 
 ```bash
+# Install dependencies
 npm install
+
+# Start development servers
+npm run dev
 ```
 
 ### Development
 
-Run all apps in development mode:
-
 ```bash
-npm run dev
-```
+# Run web app only
+npm run dev --filter=@metlink/web
 
-Run specific apps:
+# Run mobile app only
+npm run dev --filter=@metlink/mobile
 
-```bash
-# Web app
-cd apps/web && npm run dev
-
-# Mobile app
-cd apps/mobile && npm run dev
-```
-
-### Building
-
-Build all packages and apps:
-
-```bash
+# Build all packages
 npm run build
+
+# Lint all packages
+npm run lint
 ```
 
-## Project Structure
+### Database
 
-```
-.
-├── apps/
-│   ├── web/          # Next.js 14 web app
-│   └── mobile/       # Expo mobile app
-├── packages/
-│   ├── ui/           # Shared UI components
-│   ├── api/          # tRPC API layer
-│   └── db/           # Database schema (Drizzle ORM)
-├── turbo.json        # TurboRepo configuration
-└── vercel.json       # Vercel deployment configuration
+```bash
+# Generate migrations
+npm run db:generate
+
+# Push schema to database
+npm run db:push
 ```
 
-## Documentation
+## Environment Variables
 
-- [PRD.md](./PRD.md) - Product Requirements Document
-- [IMPLEMENTATION_ROADMAP.md](./IMPLEMENTATION_ROADMAP.md) - Implementation roadmap
+Create `.env` files in the appropriate directories:
+
+### Root `.env`
+
+```env
+DATABASE_URL=postgresql://...
+```
+
+### `apps/web/.env.local`
+
+```env
+NEXT_PUBLIC_SUPABASE_URL=https://...
+NEXT_PUBLIC_SUPABASE_ANON_KEY=...
+```
+
+## Design System ("Sketchpad")
+
+The UI follows a neo-brutalist "Sketchpad" aesthetic:
+
+- **Colors**: Strict monochrome (Black #000, White #FFF, Zinc-100 #F4F4F5)
+- **Status Colors**: Yellow-400 (Delay), Red-500 (Cancel), Green-500 (On Time)
+- **Borders**: All containers have `border-2 border-black`
+- **Shadows**: Hard shadows only (`shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]`)
+- **Typography**: Uppercase headers, monospace fonts
+- **Corners**: Minimal rounding (`rounded-sm` or `rounded-none`)
+
+## Deployment
+
+The project is configured for Vercel deployment with:
+- Root directory set to `apps/web`
+- Ignores mobile-only changes
+- Builds trigger on changes to `apps/web` or `packages/*`
 
 ## License
 
-Private
+MIT
 
 

@@ -1,4 +1,4 @@
-// Export tRPC router and types
-export * from "./router";
+export { appRouter, type AppRouter } from "./router";
+export { createTRPCContext, type TRPCContext } from "./trpc";
 
 

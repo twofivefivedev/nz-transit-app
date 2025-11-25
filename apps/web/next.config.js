@@ -1,7 +1,7 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   reactStrictMode: true,
-  transpilePackages: ["@repo/ui", "@repo/api"],
+  transpilePackages: ["@metlink/ui", "@metlink/api", "@metlink/db"],
 };
 
 module.exports = nextConfig;
