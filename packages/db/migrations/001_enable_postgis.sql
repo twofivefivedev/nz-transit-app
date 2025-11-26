@@ -14,3 +14,6 @@ CREATE EXTENSION IF NOT EXISTS postgis WITH SCHEMA extensions;
 -- Verify PostGIS is enabled
 SELECT PostGIS_Version();
 
+
+
+

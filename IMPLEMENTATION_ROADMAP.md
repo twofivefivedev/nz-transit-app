@@ -50,7 +50,13 @@
 - [x] `<Card />`: `border-2 border-black bg-white shadow-sharp`.
 - [x] `<Button />`: Hard edges, uppercase text.
 - [x] `<StatusBadge />`: Inverted colors for status.
-- [ ] `<DepartureRow />`: Grid layout for schedule times.
+- [x] `<DepartureRow />`: Grid layout for schedule times.
+- [x] `<DepartureTable />`: Full departure schedule with header row.
+- [x] `<FilterSelect />`: Dropdown-style selector with label/value.
+- [x] `<IconButton />`: Icon-only button with accessibility label.
+- [x] `<CountdownHero />`: Inverted hero block for countdown display.
+- [x] `<SectionHeader />`: Title section with subtitle and timestamp.
+- [x] `<FavoritesBar />`: Favorites toolbar with Add/Manage buttons.
 
 ## Phase 3: The Real-Time Engine & User API (Weeks 5-6)
 

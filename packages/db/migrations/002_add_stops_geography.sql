@@ -52,3 +52,6 @@ EXECUTE FUNCTION update_stop_location();
 -- )
 -- ORDER BY distance_meters;
 
+
+
+

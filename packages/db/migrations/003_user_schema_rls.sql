@@ -128,3 +128,6 @@ GRANT ALL ON profiles TO authenticated;
 GRANT ALL ON saved_stops TO authenticated;
 GRANT ALL ON saved_routes TO authenticated;
 
+
+
+
