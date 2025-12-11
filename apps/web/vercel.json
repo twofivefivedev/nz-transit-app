@@ -3,13 +3,7 @@
   "buildCommand": "cd ../.. && npm run build",
   "outputDirectory": ".next",
   "installCommand": "cd ../.. && npm install",
-  "framework": "nextjs",
-  "crons": [
-    {
-      "path": "/api/cron/gtfs-realtime",
-      "schedule": "0 0 * * *"
-    }
-  ]
+  "framework": "nextjs"
 }
 
 
