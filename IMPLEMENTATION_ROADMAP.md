@@ -79,8 +79,8 @@
 
 ### 3.3 Real-time Push
 
-- [ ] Implement SSE Endpoint (Web) / WebSocket (Mobile fallback).
-- [ ] Logic: Publish Redis updates to channel `stop:{id}`.
+- [x] Implement SSE Endpoint (Web) / WebSocket (Mobile fallback).
+- [x] Logic: Publish Redis updates to channel `stop:{id}`.
 
 ## Phase 4: App Assembly & Auth Integration (Weeks 7-8)
 

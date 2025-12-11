@@ -10,6 +10,13 @@ export {
   type SyncResult,
 } from "./services/gtfs-realtime";
 
+// SSE Departures Service
+export {
+  fetchDeparturesForSSE,
+  type SSEDeparture,
+  type SSEDeparturesData,
+} from "./services/sse-departures";
+
 
 
 
