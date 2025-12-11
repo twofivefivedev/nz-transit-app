@@ -10,10 +10,10 @@ import {
   stopTimes,
   trips,
   routes,
-  calendar,
+  calendarDates,
   getTripDelays,
 } from "@metlink/db";
-import { eq, and, gte, lte, sql } from "drizzle-orm";
+import { eq, and, gte, lte } from "drizzle-orm";
 import { createHash } from "crypto";
 
 // =============================================================================
@@ -69,29 +69,11 @@ function getCurrentDateString(): string {
   return nzTime.toISOString().split("T")[0];
 }
 
-function getCurrentDayOfWeek(): number {
-  const now = new Date();
-  const nzTime = new Date(
-    now.toLocaleString("en-US", { timeZone: "Pacific/Auckland" })
-  );
-  return nzTime.getDay();
-}
-
 function getStatus(delaySeconds: number): DepartureStatus {
   if (delaySeconds > 60) return "DELAYED";
   if (delaySeconds < -60) return "EARLY";
   return "ON_TIME";
 }
-
-const dayColumns = [
-  "sunday",
-  "monday",
-  "tuesday",
-  "wednesday",
-  "thursday",
-  "friday",
-  "saturday",
-] as const;
 
 /**
  * Generate a hash of the departure data for change detection
@@ -122,11 +104,10 @@ export async function fetchDeparturesForSSE(
 ): Promise<SSEDeparturesData> {
   const currentTimeSeconds = getCurrentTimeSeconds();
   const currentDate = getCurrentDateString();
-  const dayOfWeek = getCurrentDayOfWeek();
-  const dayColumn = dayColumns[dayOfWeek];
   const endTimeSeconds = currentTimeSeconds + timeRangeSeconds;
 
   // Query departures from database
+  // Metlink uses calendar_dates exclusively (exception_type=1 means service added)
   const result = await db
     .select({
       tripId: stopTimes.tripId,
@@ -139,15 +120,19 @@ export async function fetchDeparturesForSSE(
     .from(stopTimes)
     .innerJoin(trips, eq(stopTimes.tripId, trips.tripId))
     .innerJoin(routes, eq(trips.routeId, routes.routeId))
-    .innerJoin(calendar, eq(trips.serviceId, calendar.serviceId))
+    .innerJoin(
+      calendarDates,
+      and(
+        eq(trips.serviceId, calendarDates.serviceId),
+        eq(calendarDates.date, currentDate),
+        eq(calendarDates.exceptionType, 1) // 1 = service added
+      )
+    )
     .where(
       and(
         eq(stopTimes.stopId, stopId),
         gte(stopTimes.departureTime, currentTimeSeconds),
-        lte(stopTimes.departureTime, endTimeSeconds),
-        sql`${calendar[dayColumn]} = true`,
-        lte(calendar.startDate, currentDate),
-        gte(calendar.endDate, currentDate)
+        lte(stopTimes.departureTime, endTimeSeconds)
       )
     )
     .orderBy(stopTimes.departureTime)

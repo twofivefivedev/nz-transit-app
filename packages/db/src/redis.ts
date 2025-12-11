@@ -176,6 +176,11 @@ export async function getTripDelay(tripId: string): Promise<TripDelay | null> {
 export async function getTripDelays(
   tripIds: string[]
 ): Promise<Map<string, TripDelay>> {
+  // Handle empty array - mget requires at least one key
+  if (tripIds.length === 0) {
+    return new Map<string, TripDelay>();
+  }
+
   const redis = getRedis();
   const keys = tripIds.map((id) => REDIS_KEYS.tripDelay(id));
   const results = await redis.mget<(string | null)[]>(...keys);

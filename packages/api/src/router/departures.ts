@@ -1,8 +1,8 @@
 import { z } from "zod";
 import { router, publicProcedure } from "../trpc";
-import { stopTimes, trips, routes, calendar } from "@metlink/db";
+import { stopTimes, trips, routes, calendarDates } from "@metlink/db";
 import { getTripDelays } from "@metlink/db";
-import { eq, and, gte, lte, sql } from "drizzle-orm";
+import { eq, and, gte, lte } from "drizzle-orm";
 
 // =============================================================================
 // DEPARTURE TYPES
@@ -71,17 +71,6 @@ function getCurrentDateString(): string {
 }
 
 /**
- * Get day of week (0 = Sunday, 6 = Saturday) in NZ timezone
- */
-function getCurrentDayOfWeek(): number {
-  const now = new Date();
-  const nzTime = new Date(
-    now.toLocaleString("en-US", { timeZone: "Pacific/Auckland" })
-  );
-  return nzTime.getDay();
-}
-
-/**
  * Determine departure status based on delay
  */
 function getStatus(delaySeconds: number): DepartureStatus {
@@ -89,17 +78,6 @@ function getStatus(delaySeconds: number): DepartureStatus {
   if (delaySeconds < -60) return "EARLY";
   return "ON_TIME";
 }
-
-// Day of week column mapping
-const dayColumns = [
-  "sunday",
-  "monday",
-  "tuesday",
-  "wednesday",
-  "thursday",
-  "friday",
-  "saturday",
-] as const;
 
 // =============================================================================
 // DEPARTURES ROUTER
@@ -124,16 +102,14 @@ export const departuresRouter = router({
 
       const currentTimeSeconds = getCurrentTimeSeconds();
       const currentDate = getCurrentDateString();
-      const dayOfWeek = getCurrentDayOfWeek();
-      const dayColumn = dayColumns[dayOfWeek];
-
       const endTimeSeconds = currentTimeSeconds + timeRangeSeconds;
 
-      // Query stop_times joined with trips, routes, and calendar
+      // Query stop_times joined with trips, routes, and calendar_dates
+      // Metlink uses calendar_dates exclusively (exception_type=1 means service added)
       // Filter by:
       // 1. Stop ID
       // 2. Time range (departure_time between now and now + timeRange)
-      // 3. Active service (calendar day is true and date is within range)
+      // 3. Active service via calendar_dates for today
       const result = await ctx.db
         .select({
           tripId: stopTimes.tripId,
@@ -149,17 +125,19 @@ export const departuresRouter = router({
         .from(stopTimes)
         .innerJoin(trips, eq(stopTimes.tripId, trips.tripId))
         .innerJoin(routes, eq(trips.routeId, routes.routeId))
-        .innerJoin(calendar, eq(trips.serviceId, calendar.serviceId))
+        .innerJoin(
+          calendarDates,
+          and(
+            eq(trips.serviceId, calendarDates.serviceId),
+            eq(calendarDates.date, currentDate),
+            eq(calendarDates.exceptionType, 1) // 1 = service added
+          )
+        )
         .where(
           and(
             eq(stopTimes.stopId, stopId),
             gte(stopTimes.departureTime, currentTimeSeconds),
-            lte(stopTimes.departureTime, endTimeSeconds),
-            // Check if service is active on current day
-            sql`${calendar[dayColumn]} = true`,
-            // Check if current date is within service date range
-            lte(calendar.startDate, currentDate),
-            gte(calendar.endDate, currentDate)
+            lte(stopTimes.departureTime, endTimeSeconds)
           )
         )
         .orderBy(stopTimes.departureTime)

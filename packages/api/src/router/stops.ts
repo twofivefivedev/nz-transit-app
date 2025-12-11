@@ -50,7 +50,9 @@ export const stopsRouter = router({
 
       // Use PostGIS ST_DWithin for efficient radius search
       // The location column is a geography type, so distances are in meters
-      const result = await ctx.db.execute<{
+      // Use PostGIS ST_DWithin for efficient radius search
+      // Drizzle execute() returns rows directly as an array
+      const rows = await ctx.db.execute<{
         stop_id: string;
         stop_code: string | null;
         stop_name: string;
@@ -78,7 +80,10 @@ export const stopsRouter = router({
         LIMIT ${limit}
       `);
 
-      const nearbyStops: StopWithDistance[] = result.rows.map((row) => ({
+      // Handle both array and { rows: [] } response formats
+      const resultRows = Array.isArray(rows) ? rows : (rows as unknown as { rows: typeof rows }).rows ?? [];
+
+      const nearbyStops: StopWithDistance[] = resultRows.map((row) => ({
         stopId: row.stop_id,
         stopCode: row.stop_code,
         stopName: row.stop_name,

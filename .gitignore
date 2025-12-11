@@ -64,3 +64,4 @@ supabase/.temp/
 *.key
 *.mobileprovision
 *.orig.*
+apps/web/.env.local
