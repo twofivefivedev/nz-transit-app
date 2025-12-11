@@ -64,10 +64,14 @@ function getCurrentTimeSeconds(): number {
  */
 function getCurrentDateString(): string {
   const now = new Date();
-  const nzTime = new Date(
-    now.toLocaleString("en-US", { timeZone: "Pacific/Auckland" })
-  );
-  return nzTime.toISOString().split("T")[0];
+  // Use Intl.DateTimeFormat to get the correct NZ date (not UTC)
+  const formatter = new Intl.DateTimeFormat("en-CA", {
+    timeZone: "Pacific/Auckland",
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+  });
+  return formatter.format(now);
 }
 
 /**
