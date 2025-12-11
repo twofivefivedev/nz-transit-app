@@ -21,16 +21,21 @@ export const maxDuration = 60; // Allow up to 60 seconds for the sync
  */
 function getReceiver(): Receiver {
   const currentKey = process.env.QSTASH_CURRENT_SIGNING_KEY;
-  const nextKey = process.env.QSTASH_NEXT_SIGNING_KEY;
+  const nextKey = process.env.QSTASH_NEXT_SIGNING_KEY || undefined;
 
   if (!currentKey) {
     throw new Error("Missing QSTASH_CURRENT_SIGNING_KEY environment variable");
   }
 
-  return new Receiver({
+  const config: { currentSigningKey: string; nextSigningKey?: string } = {
     currentSigningKey: currentKey,
-    nextSigningKey: nextKey,
-  });
+  };
+
+  if (nextKey) {
+    config.nextSigningKey = nextKey;
+  }
+
+  return new Receiver(config as any);
 }
 
 export async function POST(request: Request): Promise<Response> {
