@@ -266,19 +266,20 @@ export async function processVehiclePositions(): Promise<number> {
   let count = 0;
 
   for (const entity of feed.entity) {
-    if (!entity.vehicle?.vehicle?.id || !entity.vehicle?.position) continue;
-
     const v = entity.vehicle;
+    if (!v?.vehicle?.id || !v?.position) continue;
+
     const vehicleId = v.vehicle.id;
+    const pos = v.position;
 
     const position: VehiclePosition = {
       vehicleId,
       tripId: v.trip?.trip_id ?? "",
       routeId: String(v.trip?.route_id ?? ""),
-      latitude: v.position.latitude,
-      longitude: v.position.longitude,
-      bearing: v.position.bearing,
-      speed: v.position.speed,
+      latitude: pos.latitude,
+      longitude: pos.longitude,
+      bearing: pos.bearing,
+      speed: pos.speed,
       timestamp: v.timestamp ? v.timestamp * 1000 : timestamp,
       currentStopSequence: v.currentStopSequence,
       currentStatus:

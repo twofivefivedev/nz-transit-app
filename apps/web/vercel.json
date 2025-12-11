@@ -1,13 +1,13 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
-  "buildCommand": "cd ../.. && npm run build --filter=@metlink/web",
+  "buildCommand": "cd ../.. && npm run build",
+  "outputDirectory": ".next",
   "installCommand": "cd ../.. && npm install",
   "framework": "nextjs",
-  "ignoreCommand": "git diff --quiet HEAD^ HEAD -- . ../../packages/",
   "crons": [
     {
       "path": "/api/cron/gtfs-realtime",
-      "schedule": "* * * * *"
+      "schedule": "0 0 * * *"
     }
   ]
 }
