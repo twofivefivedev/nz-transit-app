@@ -64,13 +64,13 @@
 
 ### 3.1 GTFS-Realtime Worker
 
-- [ ] Create lightweight worker (Cloudflare/Vercel Cron).
-- [ ] Fetch Metlink GTFS-R.
-- [ ] Write Strategy: Store delay/status in Redis (TTL: 60s).
+- [x] Create lightweight worker (Cloudflare/Vercel Cron).
+- [x] Fetch Metlink GTFS-R.
+- [x] Write Strategy: Store delay/status in Redis (TTL: 60s).
 
 ### 3.2 The API Layer (tRPC)
 
-- [ ] Public Routers:
+- [x] Public Routers:
   - `trpc.stops.getNearby({ lat, lon })`.
   - `trpc.departures.getForStop({ stopId })`: Merges Postgres Schedule + Redis Live Data.
 - [ ] User Routers (Protected):

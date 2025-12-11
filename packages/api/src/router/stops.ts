@@ -1,5 +1,35 @@
 import { z } from "zod";
 import { router, publicProcedure } from "../trpc";
+import { stops } from "@metlink/db";
+import { eq, ilike, sql } from "drizzle-orm";
+
+// =============================================================================
+// STOP RESPONSE TYPES
+// =============================================================================
+
+interface StopWithDistance {
+  stopId: string;
+  stopCode: string | null;
+  stopName: string;
+  stopLat: number;
+  stopLon: number;
+  distance: number; // meters
+}
+
+interface Stop {
+  stopId: string;
+  stopCode: string | null;
+  stopName: string;
+  stopLat: number;
+  stopLon: number;
+  locationType: number | null;
+  parentStation: string | null;
+  platformCode: string | null;
+}
+
+// =============================================================================
+// STOPS ROUTER
+// =============================================================================
 
 export const stopsRouter = router({
   /**
@@ -15,16 +45,49 @@ export const stopsRouter = router({
         limit: z.number().min(1).max(50).default(20),
       })
     )
-    .query(async ({ input }) => {
-      // TODO: Implement PostGIS query
-      // SELECT * FROM stops
-      // WHERE ST_DWithin(location, ST_MakePoint($lon, $lat)::geography, $radius)
-      // ORDER BY location <-> ST_MakePoint($lon, $lat)::geography
-      // LIMIT $limit;
-      return {
-        stops: [],
-        query: input,
-      };
+    .query(async ({ ctx, input }): Promise<{ stops: StopWithDistance[] }> => {
+      const { lat, lon, radius, limit } = input;
+
+      // Use PostGIS ST_DWithin for efficient radius search
+      // The location column is a geography type, so distances are in meters
+      const result = await ctx.db.execute<{
+        stop_id: string;
+        stop_code: string | null;
+        stop_name: string;
+        stop_lat: string;
+        stop_lon: string;
+        distance: number;
+      }>(sql`
+        SELECT 
+          stop_id,
+          stop_code,
+          stop_name,
+          stop_lat,
+          stop_lon,
+          ST_Distance(
+            location,
+            ST_SetSRID(ST_MakePoint(${lon}, ${lat}), 4326)::geography
+          ) as distance
+        FROM stops
+        WHERE ST_DWithin(
+          location,
+          ST_SetSRID(ST_MakePoint(${lon}, ${lat}), 4326)::geography,
+          ${radius}
+        )
+        ORDER BY distance
+        LIMIT ${limit}
+      `);
+
+      const nearbyStops: StopWithDistance[] = result.rows.map((row) => ({
+        stopId: row.stop_id,
+        stopCode: row.stop_code,
+        stopName: row.stop_name,
+        stopLat: parseFloat(row.stop_lat),
+        stopLon: parseFloat(row.stop_lon),
+        distance: Math.round(row.distance),
+      }));
+
+      return { stops: nearbyStops };
     }),
 
   /**
@@ -32,18 +95,41 @@ export const stopsRouter = router({
    */
   getById: publicProcedure
     .input(z.object({ stopId: z.string() }))
-    .query(async ({ input }) => {
-      // TODO: Implement database query
+    .query(async ({ ctx, input }): Promise<Stop | null> => {
+      const result = await ctx.db
+        .select({
+          stopId: stops.stopId,
+          stopCode: stops.stopCode,
+          stopName: stops.stopName,
+          stopLat: stops.stopLat,
+          stopLon: stops.stopLon,
+          locationType: stops.locationType,
+          parentStation: stops.parentStation,
+          platformCode: stops.platformCode,
+        })
+        .from(stops)
+        .where(eq(stops.stopId, input.stopId))
+        .limit(1);
+
+      if (result.length === 0) {
+        return null;
+      }
+
+      const stop = result[0];
       return {
-        stopId: input.stopId,
-        stopName: "",
-        stopLat: 0,
-        stopLon: 0,
+        stopId: stop.stopId,
+        stopCode: stop.stopCode,
+        stopName: stop.stopName,
+        stopLat: parseFloat(stop.stopLat),
+        stopLon: parseFloat(stop.stopLon),
+        locationType: stop.locationType,
+        parentStation: stop.parentStation,
+        platformCode: stop.platformCode,
       };
     }),
 
   /**
-   * Search stops by name
+   * Search stops by name (case-insensitive)
    */
   search: publicProcedure
     .input(
@@ -52,19 +138,43 @@ export const stopsRouter = router({
         limit: z.number().min(1).max(50).default(10),
       })
     )
-    .query(async ({ input }) => {
-      // TODO: Implement full-text search
-      return {
-        stops: [],
-        query: input.query,
-      };
-    }),
+    .query(
+      async ({
+        ctx,
+        input,
+      }): Promise<{ stops: Stop[]; query: string }> => {
+        const searchPattern = `%${input.query}%`;
+
+        const result = await ctx.db
+          .select({
+            stopId: stops.stopId,
+            stopCode: stops.stopCode,
+            stopName: stops.stopName,
+            stopLat: stops.stopLat,
+            stopLon: stops.stopLon,
+            locationType: stops.locationType,
+            parentStation: stops.parentStation,
+            platformCode: stops.platformCode,
+          })
+          .from(stops)
+          .where(ilike(stops.stopName, searchPattern))
+          .limit(input.limit);
+
+        const searchResults: Stop[] = result.map((stop) => ({
+          stopId: stop.stopId,
+          stopCode: stop.stopCode,
+          stopName: stop.stopName,
+          stopLat: parseFloat(stop.stopLat),
+          stopLon: parseFloat(stop.stopLon),
+          locationType: stop.locationType,
+          parentStation: stop.parentStation,
+          platformCode: stop.platformCode,
+        }));
+
+        return {
+          stops: searchResults,
+          query: input.query,
+        };
+      }
+    ),
 });
-
-
-
-
-
-
-
-

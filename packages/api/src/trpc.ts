@@ -1,12 +1,13 @@
 import { initTRPC } from "@trpc/server";
 import superjson from "superjson";
+import { db } from "@metlink/db";
 
 export interface TRPCContext {
-  // Add user session, database client, etc. here
+  db: typeof db;
 }
 
 export function createTRPCContext(): TRPCContext {
-  return {};
+  return { db };
 }
 
 const t = initTRPC.context<TRPCContext>().create({
