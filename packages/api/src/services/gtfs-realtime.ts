@@ -41,13 +41,14 @@ interface GtfsRtHeader {
   timestamp: number;
 }
 
+// Metlink API uses snake_case in JSON responses
 interface GtfsRtTrip {
-  tripId: string;
-  routeId?: string;
-  directionId?: number;
-  startTime?: string;
-  startDate?: string;
-  scheduleRelationship?: number;
+  trip_id: string;
+  route_id?: string | number;
+  direction_id?: number;
+  start_time?: string;
+  start_date?: string;
+  schedule_relationship?: number;
 }
 
 interface GtfsRtStopTimeEvent {
@@ -57,17 +58,17 @@ interface GtfsRtStopTimeEvent {
 }
 
 interface GtfsRtStopTimeUpdate {
-  stopSequence?: number;
-  stopId?: string;
+  stop_sequence?: number;
+  stop_id?: string;
   arrival?: GtfsRtStopTimeEvent;
   departure?: GtfsRtStopTimeEvent;
-  scheduleRelationship?: number;
+  schedule_relationship?: number;
 }
 
 interface GtfsRtTripUpdate {
   trip: GtfsRtTrip;
   vehicle?: { id: string };
-  stopTimeUpdate?: GtfsRtStopTimeUpdate[];
+  stop_time_update?: GtfsRtStopTimeUpdate | GtfsRtStopTimeUpdate[];
   timestamp?: number;
   delay?: number;
 }
@@ -127,8 +128,8 @@ interface GtfsRtAlert {
 
 interface GtfsRtEntity {
   id: string;
-  isDeleted?: boolean;
-  tripUpdate?: GtfsRtTripUpdate;
+  is_deleted?: boolean;
+  trip_update?: GtfsRtTripUpdate;
   vehicle?: GtfsRtVehiclePosition;
   alert?: GtfsRtAlert;
 }
@@ -219,18 +220,22 @@ export async function processTripUpdates(): Promise<number> {
   let count = 0;
 
   for (const entity of feed.entity) {
-    if (!entity.tripUpdate?.trip?.tripId) continue;
+    if (!entity.trip_update?.trip?.trip_id) continue;
 
-    const tripUpdate = entity.tripUpdate;
-    const tripId = tripUpdate.trip.tripId;
+    const tripUpdate = entity.trip_update;
+    const tripId = tripUpdate.trip.trip_id;
 
     // Get delay from trip-level delay or first stop time update
     let delaySeconds = tripUpdate.delay ?? 0;
 
-    if (delaySeconds === 0 && tripUpdate.stopTimeUpdate?.length) {
-      const firstUpdate = tripUpdate.stopTimeUpdate[0];
-      delaySeconds =
-        firstUpdate.departure?.delay ?? firstUpdate.arrival?.delay ?? 0;
+    if (delaySeconds === 0 && tripUpdate.stop_time_update) {
+      // stop_time_update can be object or array
+      const update = Array.isArray(tripUpdate.stop_time_update)
+        ? tripUpdate.stop_time_update[0]
+        : tripUpdate.stop_time_update;
+      if (update) {
+        delaySeconds = update.departure?.delay ?? update.arrival?.delay ?? 0;
+      }
     }
 
     const delay: TripDelay = {
@@ -268,8 +273,8 @@ export async function processVehiclePositions(): Promise<number> {
 
     const position: VehiclePosition = {
       vehicleId,
-      tripId: v.trip?.tripId ?? "",
-      routeId: v.trip?.routeId ?? "",
+      tripId: v.trip?.trip_id ?? "",
+      routeId: String(v.trip?.route_id ?? ""),
       latitude: v.position.latitude,
       longitude: v.position.longitude,
       bearing: v.position.bearing,

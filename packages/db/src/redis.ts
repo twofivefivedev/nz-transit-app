@@ -183,13 +183,13 @@ export async function getTripDelays(
 
   const redis = getRedis();
   const keys = tripIds.map((id) => REDIS_KEYS.tripDelay(id));
-  const results = await redis.mget<(string | null)[]>(...keys);
+  const results = await redis.mget<(TripDelay | null)[]>(...keys);
 
   const delays = new Map<string, TripDelay>();
   results.forEach((result, index) => {
     if (result) {
-      const delay = JSON.parse(result);
-      delays.set(tripIds[index], delay);
+      // Upstash Redis already parses JSON, so result is already TripDelay
+      delays.set(tripIds[index], result);
     }
   });
   return delays;
