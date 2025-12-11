@@ -110,14 +110,14 @@ export default function Home() {
                 </button>
               </div>
             </div>
-            <div className="mt-3 flex flex-col gap-2">
-              <button className="border-2 border-black bg-white px-4 py-3 text-left shadow-sharp-sm transition-all hover:bg-zinc-50 active:translate-x-[2px] active:translate-y-[2px] active:shadow-none">
+            <div className="mt-4 border-t-2 border-black">
+              <button className="w-full border-b-2 border-black bg-white px-4 py-3 text-left transition-colors hover:bg-zinc-50">
                 <span className="text-sm font-bold uppercase">Wellington Station</span>
               </button>
-              <button className="border-2 border-black bg-white px-4 py-3 text-left shadow-sharp-sm transition-all hover:bg-zinc-50 active:translate-x-[2px] active:translate-y-[2px] active:shadow-none">
+              <button className="w-full border-b-2 border-black bg-white px-4 py-3 text-left transition-colors hover:bg-zinc-50">
                 <span className="text-sm font-bold uppercase">Lambton Quay</span>
               </button>
-              <button className="border-2 border-black bg-white px-4 py-3 text-left shadow-sharp-sm transition-all hover:bg-zinc-50 active:translate-x-[2px] active:translate-y-[2px] active:shadow-none">
+              <button className="w-full bg-white px-4 py-3 text-left transition-colors hover:bg-zinc-50">
                 <span className="text-sm font-bold uppercase">Upper Hutt</span>
               </button>
             </div>
