@@ -3,7 +3,13 @@
   "buildCommand": "cd ../.. && npm run build --filter=@metlink/web",
   "installCommand": "cd ../.. && npm install",
   "framework": "nextjs",
-  "ignoreCommand": "git diff --quiet HEAD^ HEAD -- . ../../packages/"
+  "ignoreCommand": "git diff --quiet HEAD^ HEAD -- . ../../packages/",
+  "crons": [
+    {
+      "path": "/api/cron/gtfs-realtime",
+      "schedule": "* * * * *"
+    }
+  ]
 }
 
 

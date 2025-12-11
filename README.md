@@ -75,7 +75,15 @@ Create `.env` files in the appropriate directories:
 ### Root `.env`
 
 ```env
+# Database
 DATABASE_URL=postgresql://...
+
+# Redis (Upstash)
+UPSTASH_REDIS_REST_URL=https://...
+UPSTASH_REDIS_REST_TOKEN=...
+
+# Metlink API (for GTFS-RT real-time data)
+METLINK_API_KEY=your-api-key-from-opendata.metlink.org.nz
 ```
 
 ### `apps/web/.env.local`
@@ -83,6 +91,9 @@ DATABASE_URL=postgresql://...
 ```env
 NEXT_PUBLIC_SUPABASE_URL=https://...
 NEXT_PUBLIC_SUPABASE_ANON_KEY=...
+
+# Vercel Cron Authentication (set in Vercel dashboard)
+CRON_SECRET=your-random-secret-for-cron-auth
 ```
 
 ## Design System ("Sketchpad")
@@ -96,21 +107,29 @@ The UI follows a neo-brutalist "Sketchpad" aesthetic:
 - **Typography**: Uppercase headers, monospace fonts
 - **Corners**: Minimal rounding (`rounded-sm` or `rounded-none`)
 
+## Real-Time Engine
+
+The real-time engine fetches GTFS-RT data from Metlink's API and stores it in Redis:
+
+- **Endpoint**: `/api/cron/gtfs-realtime`
+- **Schedule**: Every minute (Vercel Cron)
+- **Data Types**:
+  - Trip Updates (delays)
+  - Vehicle Positions
+  - Service Alerts
+- **TTL**: 60 seconds for positions/delays, 5 minutes for alerts
+
+To get a Metlink API key, register at [opendata.metlink.org.nz](https://opendata.metlink.org.nz).
+
 ## Deployment
 
 The project is configured for Vercel deployment with:
+
 - Root directory set to `apps/web`
 - Ignores mobile-only changes
 - Builds trigger on changes to `apps/web` or `packages/*`
+- Cron job for real-time data sync (requires Pro plan for < 1 minute intervals)
 
 ## License
 
 MIT
-
-
-
-
-
-
-
-
